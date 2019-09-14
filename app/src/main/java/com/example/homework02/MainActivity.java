@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         button_addTopping = findViewById(R.id.button_addTopping);
         button_clearPizza = findViewById(R.id.button_clearPizza);
         button_checkout = findViewById(R.id.button_checkout);
-        cb_delivery = findViewById(R.id.checkBox);
+        cb_delivery =  findViewById(R.id.checkBox);
 
         final boolean[] flag_delivery = new boolean[1];
         final String[] flag_toppingImage ={""};
@@ -53,11 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         //select delivery
-       if(!cb_delivery.isChecked()){
-            flag_delivery[0] = false;
+       if(cb_delivery.isChecked()){
+           cb_delivery.setChecked(true);
+           flag_delivery[0] = true;
         }else{
-            flag_delivery[0] = true;
+           cb_delivery.setChecked(false);
+           flag_delivery[0] = false;
         }
+       Log.d("Checked","" + cb_delivery.isChecked());
 
         //add topping button, case statement with topping strings that correspond to images, display toppings
 
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, OrderActivity.class);
 
-                Order order = new Order(flag_delivery[0],selectedToppings);
+                Order order = new Order(cb_delivery.isChecked(),selectedToppings);
                 Log.d("Values before Intent: ", order.toString());
                 Bundle sentData = new Bundle();
                 sentData.putSerializable("order", order);
