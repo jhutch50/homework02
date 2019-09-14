@@ -3,7 +3,6 @@ package com.example.homework02;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,22 +11,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG_IMAGE = "main";
+
+
     Button button_addTopping;
     Button button_clearPizza;
     Button button_checkout;
+    CheckBox cb_delivery;
+    LinearLayout topping_top_row;
+    LinearLayout topping_bottom_row;
 
 
-    CheckBox cb_delivery =null;
-
-    ArrayList<ImageView> iv_topping_top = new ArrayList<>();
-    ArrayList<ImageView> iv_topping_bottom = new ArrayList<>();
 
 
     @Override
@@ -41,11 +41,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         //take values from page
         button_addTopping = findViewById(R.id.button_addTopping);
         button_clearPizza = findViewById(R.id.button_clearPizza);
-        button_checkout = findViewById(R.id.button_checkout);
-        cb_delivery =  findViewById(R.id.checkBox);
+        button_checkout= findViewById(R.id.button_checkout);
+        cb_delivery = findViewById(R.id.checkBox);
+        topping_top_row =findViewById(R.id.topping_top_row);
+        topping_bottom_row =findViewById(R.id.topping_bottom_row);
+
+
+
 
         final boolean[] flag_delivery = new boolean[1];
         final String[] flag_toppingImage ={""};
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
            cb_delivery.setChecked(false);
            flag_delivery[0] = false;
         }
+
        Log.d("Checked","" + cb_delivery.isChecked());
 
         //add topping button, case statement with topping strings that correspond to images, display toppings
@@ -72,23 +79,76 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Log.d("demo","Clicked " + toppings[i]);
-                    if(!(selectedToppings.size()>10)){
+                    if(!(selectedToppings.size()>9)){
                         selectedToppings.add(toppings[i]);
-                        if(selectedToppings.size()<6){
-                            /*ImageView currentImage = null;
-                            int resourceID =getResources().getIdentifier(toppings[i].toLowerCase(),"drawable",getPackageName());
-                            Log.d("resourceID=", ""+resourceID+" which is " + toppings[i]);
-                            currentImage.setImageDrawable();
-                            currentImage.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-                            relativeLayout.addView(currentImage);
-                            setContentView(relativeLayout);
-*/
-                        }else if(selectedToppings.size()<11){
-                            /*ImageView currentImage = null;
-                            int resourceID =getResources().getIdentifier(toppings[i],"drawable",getPackageName());
-                            currentImage.setImageDrawable(getDrawable(resourceID));
-*/
+                        final ImageView currentImage = new ImageView(getBaseContext());
+                        switch(toppings[i]){
+                            case "Garlic":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.garlic));
+                                break;
+                            case "Bacon":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.bacon));
+                                break;
+                            case "Cheese":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.cheese));
+                                break;
+                            case "Green Pepper":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.green_pepper));
+                                break;
+                            case "Red Pepper":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.red_pepper));
+                                break;
+                            case "Mushroom":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.mushroom));
+                                break;
+                            case "Olives":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.olive));
+                                break;
+                            case "Onions":
+                                currentImage.setImageDrawable(getDrawable(R.drawable.onion));
+                                break;
                         }
+                        if(selectedToppings.size()<6){
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(16,0,16,0);
+                            currentImage.setLayoutParams(params);
+                            currentImage.getLayoutParams().height = 150;
+                            currentImage.getLayoutParams().width = 150;
+                            currentImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    selectedToppings.remove(topping_top_row.indexOfChild(view));
+                                    topping_top_row.removeView(view);
+
+                                }
+                            });
+                            topping_top_row.addView(currentImage);
+
+
+                        }else if(selectedToppings.size()<11){
+
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(16,0,16,0);
+                            currentImage.setLayoutParams(params);
+                            currentImage.getLayoutParams().height = 150;
+                            currentImage.getLayoutParams().width = 150;
+                            currentImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    selectedToppings.remove(5+topping_bottom_row.indexOfChild(view));
+                                    topping_bottom_row.removeView(view);
+                                }
+                            });
+                            topping_bottom_row.addView(currentImage);
+
+
+                        }
+                    }else{
+                        AlertDialog.Builder max_builder = new AlertDialog.Builder(MainActivity.this);
+                        max_builder.setTitle("Warning").setMessage("Maximum Topping capacity reached!");
+
+                        final AlertDialog max = max_builder.create();
+                        max.show();
                     }
 
                 }
@@ -96,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
             final AlertDialog alert = builder.create();
+
+
             Log.d("The current Size",selectedToppings.size()+"");
 
 
@@ -106,14 +168,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        //remove topping from arraylist when topping picture is clicked
-
 
         //clear button
         button_clearPizza.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                clearButton();
+                selectedToppings.clear();
+                topping_top_row.removeAllViews();
+                topping_bottom_row.removeAllViews();
             }
         });
 
@@ -139,16 +201,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void clearButton(){
-        //et_length1.setVisibility(View.VISIBLE);
-        //et_length2.setVisibility(View.VISIBLE);
-      //  tv_result.setVisibility(View.VISIBLE);
-       // et_length1.setText("");
-       // et_length2.setText("");
-        //tv_result.setText("");
-//        tv_shape.setText("Select a shape");
-//        triangle.setVisibility(View.VISIBLE);
-//        circle.setVisibility(View.VISIBLE);
 
-    }
 }
