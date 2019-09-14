@@ -1,3 +1,11 @@
+/*
+Team 11:
+Homework 2
+Names:
+Joshua Hutcheson
+Hailey Brown
+Ormelia Robinson
+ */
 package com.example.homework02;
 
 import androidx.appcompat.app.AppCompatActivity;
